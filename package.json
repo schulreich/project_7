@@ -1,0 +1,23 @@
+{
+  "name": "project_7",
+  "version": "1.0.0",
+  "description": "Restaurant review project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/schulreich/project_7.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/schulreich/project_7/issues"
+  },
+  "homepage": "https://github.com/schulreich/project_7#readme",
+  "dependencies": {
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  }
+}
