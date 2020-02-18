@@ -1,13 +1,12 @@
 import React from "react"
-import PersistentDrawerLeft from "./components/DrawerComponents/PersistentDrawerLeft"
-import SimpleExpansionPanel from "./components/PanelComponents/SimpleExpansionPanel"
+import PersistantDrawerLeft from "./components/DrawerComponents/PersistantDrawerLeft"
 
 
 
 function App () {
   return (
     <div>
-      <PersistentDrawerLeft />
+      <PersistantDrawerLeft />
     </div>
   )
 }

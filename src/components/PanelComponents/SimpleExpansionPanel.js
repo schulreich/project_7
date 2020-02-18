@@ -1,14 +1,14 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import RecipeReviewCard from "./RecipeReviewCard"
-import LabelBottomNavigation from "./LabelBottomNavigation"
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     width: '100%',
   },
@@ -16,29 +16,23 @@ const useStyles = makeStyles(theme => ({
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
   },
-}));
+});
 
-export default function SimpleExpansionPanel() {
-  const classes = useStyles();
-
+function SimpleExpansionPanel(props) {
+  const { classes } = props;
   return (
     <div className={classes.root}>
       <ExpansionPanel>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Expansion Panel 1</Typography>
+          
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
-            <RecipeReviewCard />
+          <RecipeReviewCard />
         </ExpansionPanelDetails>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2a-content"
-          id="panel2a-header"
-        >
+      </ExpansionPanel>
+      <ExpansionPanel>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Expansion Panel 2</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
@@ -49,16 +43,16 @@ export default function SimpleExpansionPanel() {
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel disabled>
-        <ExpansionPanelSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel3a-content"
-          id="panel3a-header"
-        >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography className={classes.heading}>Disabled Expansion Panel</Typography>
         </ExpansionPanelSummary>
       </ExpansionPanel>
-
-      <LabelBottomNavigation />
     </div>
   );
 }
+
+SimpleExpansionPanel.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+export default withStyles(styles)(SimpleExpansionPanel);
