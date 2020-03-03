@@ -11,8 +11,9 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ReciepReviewCard from "../PanelComponents/RecipeReviewCard"
-import Map from "./Map"
+import ReciepReviewCard from "../PanelComponents/RecipeReviewCard";
+import PrimarySearchBar from "./PrimarySearchBar";
+import MapContainer from "../MapData/MapContainer";
 
 const drawerWidth = 330;
 
@@ -53,6 +54,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
+    
   },
   content: {
     flexGrow: 1,
@@ -69,6 +71,9 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     marginLeft: 0,
+  },
+  makeStylesDrawerHeader8:{
+    backgroundColor: "#3f51b5"
   },
 }));
 
@@ -105,7 +110,6 @@ export default function PersistentDrawerLeft() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            Persistent drawer
           </Typography>
         </Toolbar>
       </AppBar>
@@ -119,6 +123,7 @@ export default function PersistentDrawerLeft() {
         }}
       >
         <div className={classes.drawerHeader}>
+          <PrimarySearchBar />
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
           </IconButton>
@@ -133,7 +138,8 @@ export default function PersistentDrawerLeft() {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Map />
+       
+        <MapContainer />
       </main>
     </div>
   );

@@ -1,6 +1,9 @@
 import React from "react"
 import restaurantData from "../../restaurantData"
-import RestaurantComponents from "./RestaurantComponents"
+import Divider from '@material-ui/core/Divider';
+import HoverRating from "./HoverRating"
+import LabelBottomNavigation from "./LabelBottomNavigation"
+import MaxWidthDialog from "./MaxWidthDialog"
 import "./style.css"
 
 
@@ -28,21 +31,24 @@ export default class Restaurant extends React.Component{
     render(){
         return(
             <div className="divStyle">
-                <h1></h1>
                 {
                     this.state.restaurantInfo.map((item)=> 
-                    <div>
+                    <div key= {Date.now()+Math.floor(Math.random()*100)}> 
+                    <img className="restaurantImage" src={item.image} alt="" />
                     <h3>{item.restaurantName}</h3>
-                    <img src={item.image}/>
                     <p>{item.address}</p>
-                    <p>{item.long}/ {item.lat}</p>
+                    <Divider />
                     <ul>
                         {item.ratings.map((sub)=>
-                        <li>
-                            {sub.stars} {sub.comment}
-                        </li>
+                        <div key = {Date.now()+Math.floor(Math.random()*100)}>
+                        <HoverRating />
+                        {sub.comment}
+                        </div>
                         )}
                     </ul>
+                    <MaxWidthDialog />
+                    <LabelBottomNavigation />
+                    <Divider />
                     </div>
                     )
                 }
