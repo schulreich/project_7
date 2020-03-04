@@ -19,21 +19,10 @@ class MapContainer extends React.Component {
     this.clearMarkers = this.clearMarkers.bind(this);
     this.storeMarker = this.storeMarker.bind(this);
     this.extractMarkers = this.extractMarkers.bind(this);
-    this.onMarkerClick = this.onMarkerClick.bind(this);
     this.onMapClick = this.onMapClick.bind(this);
   }
-  onMarkerClick = (props, marker, e) => {
-    console.log("Test :: onMarkerClick")
-    console.log(props)
-    console.log(marker)
-    this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true,
-    });
-  }
+
   onMapClick = (props) => {
-    console.log("Test :: onMapClick")
     if (this.state.showingInfoWindow) {
       this.setState({
         showingInfoWindow: false,
@@ -42,6 +31,19 @@ class MapContainer extends React.Component {
     }
   }
 
+  onMarkerClick = (props, marker) =>
+    this.setState({
+      activeMarker: marker,
+      selectedPlace: props,
+      showingInfoWindow: true
+    });
+
+  onInfoWindowClose = () =>
+    this.setState({
+      activeMarker: null,
+      showingInfoWindow: false
+    });
+
   clearMarkers(){
     this.setState({
       restaurantMarkers: []
@@ -49,11 +51,13 @@ class MapContainer extends React.Component {
   }
 
   storeMarker(restaurantData){
+    //console.log(restaurantData)
     const newMarker = {}
     newMarker.id = restaurantData.id
     newMarker.name = restaurantData.name
     newMarker.lat = restaurantData.geometry.location.lat
     newMarker.lng = restaurantData.geometry.location.lng
+    newMarker.address = restaurantData.vicinity
     let restaurantMarkers = this.state.restaurantMarkers
     restaurantMarkers=restaurantMarkers.concat([newMarker])
     this.setState({
@@ -98,7 +102,8 @@ class MapContainer extends React.Component {
                 id={restaurantMarker.id}
                 name={restaurantMarker.name}
                 lat={restaurantMarker.lat}
-						    lng={restaurantMarker.lng}
+                lng={restaurantMarker.lng}
+                address={restaurantMarker.address}
                 />
       )
     }))
@@ -112,33 +117,31 @@ class MapContainer extends React.Component {
     
     return (
       <Map google={this.props.google}
-      onClick = {this.onMapClick}
-      style= {style}
-      initialCenter= {{
-        lat:51.3929,
-        lng:6.7982,
-      }}
-      zoom={14}
-      
+        onClick= {this.onMapClick}
+        style= {style}
+        initialCenter= {{
+          lat:51.3929,
+          lng:6.7982,
+        }}
+        zoom={14}
       >
         <Marker onClick={this.onMarkerClick}
                 name={'Current location'} 
                 />
                 
-        <InfoWindow
-          onOpen={this.windowHasOpened}
-          onClose={this.windowHasClosed}
-          marker={this.state.activeMarker}
-          visible={this.state.showingInfoWindow}>
-            <div>
-              <h1>{this.state.selectedPlace.name}</h1>
-            </div>
-        </InfoWindow>    
- 
         {this.renderMarkers()}
         
-        
-</Map>
+        <InfoWindow
+          marker={this.state.activeMarker}
+          onClose={this.onInfoWindowClose}
+          visible={this.state.showingInfoWindow}
+        >
+          <div>
+            <h4>{this.state.selectedPlace.name}</h4>
+            <p>{this.state.selectedPlace.address}</p>
+          </div>
+        </InfoWindow>
+      </Map>
     );
   }
 }
