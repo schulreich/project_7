@@ -1,12 +1,11 @@
 import React from "react"
-import PersistantDrawerLeft from "./components/DrawerComponents/PersistantDrawerLeft"
-
-
+import "./Components/GridComponent/MainGrid"
+import MainGrid from "./Components/GridComponent/MainGrid"
 
 function App () {
   return (
     <div>
-      <PersistantDrawerLeft />
+      <MainGrid />
     </div>
   )
 }

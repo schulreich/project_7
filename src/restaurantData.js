@@ -17,26 +17,6 @@ const restaurant =[
           }
        ]
     },
-    {
-      
-        id:"2",
-        restaurantName:"Babalou",
-        address:"4 Rue Lamarck, 75018 Paris",
-        lat:51.428500,
-        lng:6.764519,
-        //image: "https://images.unsplash.com/photo-1506354666786-959d6d497f1a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-        ratings:[
-          { 
-           // stars:5,
-            //comment:"Tiny pizzeria next to Sacre Coeur!"
-          },
-          { 
-            //stars:3,
-            //comment:"Meh, it was fine."
-          }
-       ]
-       
-    }
     
  ]
 

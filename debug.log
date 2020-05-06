@@ -1,0 +1,3 @@
+[0331/012345.613:ERROR:process_reader_win.cc(151)] SuspendThread: Zugriff verweigert (0x5)
+[0331/012345.674:ERROR:exception_snapshot_win.cc(98)] thread ID 13012 not found in process
+[0331/012345.674:ERROR:scoped_process_suspend.cc(40)] NtResumeProcess: Es wurde versucht, auf einen Prozess zuzugreifen, der gerade beendet wurde. (0xc000010a)

@@ -1,0 +1,5 @@
+<div className="content" dangerouslySetInnerHTML={{__html: props.photos[0].html_attributions[0]}}>
+            </div>
+            <img src=""></img>
+
+// for image data ??? restaurantCard

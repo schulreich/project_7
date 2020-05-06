@@ -1,0 +1,34 @@
+import React from './node_modules/react';
+
+import "../HeaderComponents/SearchBar"
+import "../GoogleMapsComponents/MapContainer"
+import "../AsideComponents/RestaurantDetails"
+
+import { makeStyles } from './node_modules/@material-ui/core/styles';
+import Grid from './node_modules/@material-ui/core/Grid';
+import MapContainer from '../GoogleMapsComponents/MapContainer';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  paper: {
+    padding: theme.spacing(5),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+}));
+
+export default function MainGrid() {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={12}>
+          <MapContainer className={classes.paper}>xs=12 sm=6</MapContainer>
+        </Grid>
+      </Grid>
+    </div>
+  );
+}
