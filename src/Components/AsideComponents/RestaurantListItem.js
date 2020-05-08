@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
       width: '100%',
       maxWidth: '36ch',
       nWidth: 275,
-      height: 490,
+      height: 470,
       zindex: 1,
       position: "absolute",
       top:"12%",

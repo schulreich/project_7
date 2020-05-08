@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Map, GoogleApiWrapper, Marker, InfoWindow } from 'google-maps-react';
+import { Map, GoogleApiWrapper, Marker, InfoWindow,} from 'google-maps-react';
 
 import MapConfig from "./MapConfig"
 import RestaurantDetails from '../AsideComponents/RestaurantDetails';
@@ -10,7 +10,8 @@ function MapContainer(props) {
   const [lat] = useState(MapConfig.lat || 51.4344);
   const [lng] = useState(MapConfig.lng || 6.7623);
   const [hasErrors,setErrors] = useState(false);
-  const [restaurants, setRestaurants] = useState([])
+  const [restaurants, setRestaurants] = useState([]);
+  const [restaurantDetailsList, setRestaurantDetailsList] = useState([]);
   
 
   //get called multiple times solution ?? where best to call 
@@ -27,9 +28,11 @@ function MapContainer(props) {
 
   }, [hasErrors]); //better fix needed
 
+  
   const [state, setState] = useState({
     activeMarker: {},
     activeRestaurant: {},
+    activeRestaurantDetails: {},
     showingInfoWindow: false,
     showingRestaurantDetailsWindow: false,
     text: '',
@@ -39,17 +42,67 @@ function MapContainer(props) {
   });
 
   const onMarkerClick = (props, marker) => {
-    console.log(props);
-    console.log(marker);
-    setState({
-      ...state,
-      activeMarker: marker,
-      activeRestaurant: marker.restaurant,
-      showingInfoWindow: true,
-      showingRestaurantDetailsWindow: true,
-      createRestaurantForm:false,
-      text: marker.text || ''
-    });
+    console.log('onMarkerClick');
+    //console.log(props);
+    //console.log(marker);
+    if(
+      marker.restaurant 
+      && marker.restaurant.place_id
+    ){
+      if(!restaurantDetailsList[marker.restaurant.id]){
+        let request = {
+          placeId: marker.restaurant.place_id
+        };
+        //fields: ['name', 'formatted_address', 'geometry', 'rating','website', 'photos']
+
+        let map = new window.google.maps.Map(document.createElement('div'));
+        let service = new window.google.maps.places.PlacesService(map);
+      
+        service.getDetails(request, (placeResult, status) => {
+          let tempRestaurantDetailsList = restaurantDetailsList;
+          tempRestaurantDetailsList[marker.restaurant.id] = placeResult;
+          setRestaurantDetailsList(tempRestaurantDetailsList);
+          console.log(restaurantDetailsList)
+          console.log('Service :: getDetails')
+          //console.log(placeResult)
+          //console.log(marker)
+          //console.log(status)
+          setState({
+            ...state,
+            activeMarker: marker,
+            activeRestaurant: marker.restaurant,
+            activeRestaurantDetails: placeResult,
+            showingInfoWindow: true,
+            showingRestaurantDetailsWindow: true,
+            createRestaurantForm:false,
+            text: marker.text || ''
+          });
+        });
+      }else{
+        setState({
+          ...state,
+          activeMarker: marker,
+          activeRestaurant: marker.restaurant,
+          activeRestaurantDetails: restaurantDetailsList[marker.restaurant.id],
+          showingInfoWindow: true,
+          showingRestaurantDetailsWindow: true,
+          createRestaurantForm:false,
+          text: marker.text || ''
+        });
+      }
+    }else{  
+      setState({
+        ...state,
+        activeMarker: marker,
+        activeRestaurant: marker.restaurant,
+        activeRestaurantDetails: {},
+        showingInfoWindow: true,
+        showingRestaurantDetailsWindow: true,
+        createRestaurantForm:false,
+        text: marker.text || ''
+      });
+    }
+
   };
 
   const onInfoWindowClose = () => {
@@ -61,7 +114,7 @@ function MapContainer(props) {
   }
 
   const clearTempMarker = () =>{
-    console.log(state.tempMarker)
+    //console.log(state.tempMarker)
     if(state.tempMarker===true){
       restaurants.results = restaurants.results
       restaurants.results.splice(-1,1)
@@ -71,7 +124,7 @@ function MapContainer(props) {
         tempMarker:false,
       })
     }
-    console.log("clearTempMarker")
+    //console.log("clearTempMarker")
   }
 
 
@@ -79,7 +132,7 @@ function MapContainer(props) {
 
     //clearTempMarker()
 
-    console.log('TEST :: tempMarkerLocation');
+    //console.log('TEST :: tempMarkerLocation');
     //console.log("props");
     //console.log(props);
     //console.log("state");
@@ -114,7 +167,53 @@ function MapContainer(props) {
     }
   }
 
-  
+  const addReview=(props) =>{
+    console.log("TestAddReview")
+    console.log(props)
+    if(
+      props 
+      && (
+        props.review
+        || props.rating
+      )
+    ){
+      let review = props.review;
+      if(!review){
+        review = '';
+      }
+      let rating = props.rating;
+      if(!rating || rating < 1 || rating > 5){
+        rating = 1;
+      }
+      let tempRestaurantDetailsList = restaurantDetailsList
+      if(!tempRestaurantDetailsList[state.activeRestaurant.id]){
+        console.log('new restaurantDetails created');
+        //create new restaurantDetails if not existing
+        tempRestaurantDetailsList[state.activeRestaurant.id] = {
+          reviews: []
+        }
+      }
+
+      tempRestaurantDetailsList[state.activeRestaurant.id].reviews.push({
+        text: review,
+        rating: rating
+      });
+
+      console.log(tempRestaurantDetailsList[state.activeRestaurant.id]);
+      console.log(tempRestaurantDetailsList);
+
+      setRestaurantDetailsList(tempRestaurantDetailsList)
+    }
+    setState({
+      ...state,
+      showingInfoWindow:false,
+      activeMarker:null,
+      activeRestaurant:null,
+      showingRestaurantDetailsWindow:false,
+      tempMarkerLocation:{},
+      createRestaurantForm:false
+    })
+  }
   const onMapClick = (props,map,event) => {
       //console.log('TEST :: onMapClick');
       //console.log(myTempMarkerLocation);
@@ -138,7 +237,7 @@ function MapContainer(props) {
   }
 
   const onRestaurantListItemClick = (props) => {
-    console.log("RestaurantListItemClicked")
+    //console.log("RestaurantListItemClicked")
     setState({
       ...state,
       activeRestaurant: props.restaurant,
@@ -147,7 +246,7 @@ function MapContainer(props) {
     });
   }
   return (
-    <div className='map'>
+    <div className='map' id="myMap">
       <Map
         google={props.google}
         onClick={onMapClick}
@@ -185,6 +284,8 @@ function MapContainer(props) {
           ? 
           <RestaurantDetails 
             restaurant={state.activeRestaurant}
+            details={state.activeRestaurantDetails}
+            addReview={addReview}
           />
           : null
         }
