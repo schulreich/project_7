@@ -10,9 +10,11 @@ function MapContainer(props) {
   const [lat] = useState(MapConfig.lat || 51.4344);
   const [lng] = useState(MapConfig.lng || 6.7623);
   const [hasErrors,setErrors] = useState(false);
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurantArray, setRestaurantArray] = useState([]);
   const [restaurantDetailsList, setRestaurantDetailsList] = useState([]);
   
+  const mapObject = new window.google.maps.Map(document.createElement('div'));
+  const googlePlacesService = new window.google.maps.places.PlacesService(mapObject);
 
   //get called multiple times solution ?? where best to call 
   useEffect(() => {
@@ -20,14 +22,13 @@ function MapContainer(props) {
       const res = await fetch("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=51.434406,6.762329&radius=1500&type=restaurant&key=AIzaSyC6iHzGGrNmtKZB-LDf2tCYMOQXKD6YPac");
       res
         .json()
-        .then(res => setRestaurants(res))
+        .then(res => storeRestaurantArrayResults(res))
         .catch(err => setErrors(err));
     }
 
     fetchData();
 
-  }, [hasErrors]); //better fix needed
-
+  }, [hasErrors]);
   
   const [state, setState] = useState({
     activeMarker: {},
@@ -39,10 +40,30 @@ function MapContainer(props) {
     tempMarker:false,
     createRestaurantForm: false,
     tempMarkerLocation:{},
+    filterMinRating:1,
+    filterMaxRating:4,
   });
 
+  const storeRestaurantArrayResults = (props) => {
+    //console.log(props)
+    if(props && props.results){
+      /*
+      setRestaurantArray(props.results);
+      return;
+      */
+      let newRestaurantArray = [];
+      props.results.map(restaurant => {
+        if(restaurant && restaurant.id){
+          newRestaurantArray[restaurant.id] = restaurant
+        }
+      });
+      setRestaurantArray(newRestaurantArray);
+      //console.log(newRestaurantArray);
+    }
+  };
+
   const onMarkerClick = (props, marker) => {
-    console.log('onMarkerClick');
+    //console.log('onMarkerClick');
     //console.log(props);
     //console.log(marker);
     if(
@@ -55,18 +76,10 @@ function MapContainer(props) {
         };
         //fields: ['name', 'formatted_address', 'geometry', 'rating','website', 'photos']
 
-        let map = new window.google.maps.Map(document.createElement('div'));
-        let service = new window.google.maps.places.PlacesService(map);
-      
-        service.getDetails(request, (placeResult, status) => {
+        googlePlacesService.getDetails(request, (placeResult, status) => {
           let tempRestaurantDetailsList = restaurantDetailsList;
           tempRestaurantDetailsList[marker.restaurant.id] = placeResult;
           setRestaurantDetailsList(tempRestaurantDetailsList);
-          console.log(restaurantDetailsList)
-          console.log('Service :: getDetails')
-          //console.log(placeResult)
-          //console.log(marker)
-          //console.log(status)
           setState({
             ...state,
             activeMarker: marker,
@@ -113,33 +126,7 @@ function MapContainer(props) {
     });
   }
 
-  const clearTempMarker = () =>{
-    //console.log(state.tempMarker)
-    if(state.tempMarker===true){
-      restaurants.results = restaurants.results
-      restaurants.results.splice(-1,1)
-      setState({
-        ...state,
-        restaurants:restaurants,
-        tempMarker:false,
-      })
-    }
-    //console.log("clearTempMarker")
-  }
-
-
-  const addTempMarker = (props) =>{
-
-    //clearTempMarker()
-
-    //console.log('TEST :: tempMarkerLocation');
-    //console.log("props");
-    //console.log(props);
-    //console.log("state");
-    //console.log(state);
-    //console.log("state.tempMarkerLocation");
-    //console.log(state.tempMarkerLocation);
-
+  const addRestaurant = (props) =>{
     if(state.tempMarkerLocation){
 
       const newMarker={
@@ -155,21 +142,22 @@ function MapContainer(props) {
           "vicinity":props.address,
           "tempMarker":true
       };
-      restaurants.results=restaurants.results.concat([newMarker])
+      //let newRestaurantArray=restaurantArray.concat([newMarker])
+      let newRestaurantArray=restaurantArray;
+      newRestaurantArray[newMarker.id] = newMarker;
+      setRestaurantArray(newRestaurantArray)
       setState({
         ...state,
         tempMarker:true,
-        restaurants:restaurants,
         tempMarkerLocation:{},
         createRestaurantForm:false
       })
-      //console.log(restaurants)
     }
   }
 
   const addReview=(props) =>{
-    console.log("TestAddReview")
-    console.log(props)
+    //console.log("TestAddReview")
+    //console.log(props)
     if(
       props 
       && (
@@ -187,7 +175,7 @@ function MapContainer(props) {
       }
       let tempRestaurantDetailsList = restaurantDetailsList
       if(!tempRestaurantDetailsList[state.activeRestaurant.id]){
-        console.log('new restaurantDetails created');
+        //console.log('new restaurantDetails created');
         //create new restaurantDetails if not existing
         tempRestaurantDetailsList[state.activeRestaurant.id] = {
           reviews: []
@@ -199,10 +187,26 @@ function MapContainer(props) {
         rating: rating
       });
 
-      console.log(tempRestaurantDetailsList[state.activeRestaurant.id]);
-      console.log(tempRestaurantDetailsList);
+      let cnt_rating = 0;
+      let sum_rating = 0;
+      tempRestaurantDetailsList[state.activeRestaurant.id].reviews.map(restaurantReview => {
+        if(restaurantReview.rating){
+          cnt_rating++;
+          sum_rating+=restaurantReview.rating;
+        }
+      });
+      let avg_rating = sum_rating / cnt_rating;
+      let tempRestaurantArray = restaurantArray;
+      tempRestaurantArray[state.activeRestaurant.id].rating = avg_rating;
 
-      setRestaurantDetailsList(tempRestaurantDetailsList)
+      //console.log(tempRestaurantDetailsList[state.activeRestaurant.id]);
+      //console.log(tempRestaurantDetailsList);
+      //console.log('Cnt Rating :: '+cnt_rating);
+      //console.log('Sum Rating :: '+sum_rating);
+      //console.log('Avg Rating :: '+avg_rating);
+
+      setRestaurantDetailsList(tempRestaurantDetailsList);
+      setRestaurantArray(tempRestaurantArray);
     }
     setState({
       ...state,
@@ -213,12 +217,8 @@ function MapContainer(props) {
       tempMarkerLocation:{},
       createRestaurantForm:false
     })
-  }
+  };
   const onMapClick = (props,map,event) => {
-      //console.log('TEST :: onMapClick');
-      //console.log(myTempMarkerLocation);
-      //console.log('before state');
-      //console.log(state);
       setState({
         ...state,
         showingInfoWindow:false,
@@ -228,23 +228,95 @@ function MapContainer(props) {
         tempMarkerLocation:{lat:event.latLng.lat(),lng:event.latLng.lng()},
         createRestaurantForm:!state.createRestaurantForm
       })
-      
-      /*
-      console.log('after state');
-      console.log(state);
-      addTempMarker(props)
-      */
+  }
+
+  const updateMinRating = (value) => {
+    if(!value || value < 1 || value > 5){
+      value = 1;
+    }
+    /*
+    let valueMax = state.filterMaxRating;
+    if(valueMax < value){
+      valueMax = value;
+    }
+    console.log('(updateMinRating) Min :: '+value+' :: Max :: '+valueMax)
+    */
+    setState({
+      ...state,
+      filterMinRating: value,
+      //filterMaxRating: valueMax
+    });
+  }
+
+  const updateMaxRating = (value) => {
+    if(!value || value < 1 || value > 5){
+      value = 5;
+    }
+    /*
+    let valueMin = state.filterMinRating;
+    if(valueMin > value){
+      valueMin = value;
+    }
+    console.log('(updateMaxRating) Min :: '+valueMin+' :: Max :: '+value)
+    */
+    setState({
+      ...state,
+      filterMaxRating: value,
+      //filterMinRating: valueMin
+    });
   }
 
   const onRestaurantListItemClick = (props) => {
     //console.log("RestaurantListItemClicked")
-    setState({
-      ...state,
-      activeRestaurant: props.restaurant,
-      showingRestaurantDetailsWindow: true,
-      createRestaurantForm:false
-    });
+    //console.log(props);
+    if(
+      props.restaurant 
+      && props.restaurant.place_id
+    ){
+      if(!restaurantDetailsList[props.restaurant.id]){
+        let request = {
+          placeId: props.restaurant.place_id
+        };
+        //fields: ['name', 'formatted_address', 'geometry', 'rating','website', 'photos']
+
+        googlePlacesService.getDetails(request, (placeResult, status) => {
+          let tempRestaurantDetailsList = restaurantDetailsList;
+          tempRestaurantDetailsList[props.restaurant.id] = placeResult;
+          setRestaurantDetailsList(tempRestaurantDetailsList);
+          setState({
+            ...state,
+            activeMarker: null,
+            showingInfoWindow: false,
+            activeRestaurantDetails: placeResult,
+            activeRestaurant: props.restaurant,
+            showingRestaurantDetailsWindow: true,
+            createRestaurantForm:false
+          });
+        });
+      }else{
+        setState({
+          ...state,
+          activeMarker: null,
+          showingInfoWindow: false,
+          activeRestaurantDetails: restaurantDetailsList[props.restaurant.id],
+          activeRestaurant: props.restaurant,
+          showingRestaurantDetailsWindow: true,
+          createRestaurantForm:false
+        });
+      }
+    }else{  
+      setState({
+        ...state,
+        activeMarker: null,
+        showingInfoWindow: false,
+        activeRestaurantDetails: {},
+        activeRestaurant: props.restaurant,
+        showingRestaurantDetailsWindow: true,
+        createRestaurantForm:false
+      });
+    }
   }
+
   return (
     <div className='map' id="myMap">
       <Map
@@ -257,19 +329,25 @@ function MapContainer(props) {
           lng
         }}
       >
-        {restaurants && restaurants.results && restaurants.results.map(restaurant => (
-          <Marker
-          onClick={onMarkerClick}
-          key= {restaurant.id}
-          text= {restaurant.name} 
-          position={{ lat: restaurant.geometry.location.lat, lng: restaurant.geometry.location.lng}}
-          restaurant={restaurant}
-          />
-        ))}
+        {restaurantArray && Object.keys(restaurantArray).map(restaurant_id => {
+          if(restaurantArray[restaurant_id].rating >= state.filterMinRating && restaurantArray[restaurant_id].rating <= state.filterMaxRating){
+            return (
+            <Marker
+              onClick={onMarkerClick}
+              key={restaurant_id}
+              text= {restaurantArray[restaurant_id].name} 
+              position={{ lat: restaurantArray[restaurant_id].geometry.location.lat, lng: restaurantArray[restaurant_id].geometry.location.lng}}
+              restaurant={restaurantArray[restaurant_id]}
+            />
+            )
+          }else{
+            return null;
+          }
+        })}
         <Marker
           onClick={onMarkerClick}
-          text='some text'
-          />
+          text='Current Position'
+        />
 
         <InfoWindow
           marker={state.activeMarker}
@@ -290,11 +368,15 @@ function MapContainer(props) {
           : null
         }
 
-        {restaurants && restaurants.results
+        {restaurantArray
           ?
           <RestaurantList
-          restaurantList={restaurants.results}
-          onClickListItem={onRestaurantListItemClick}
+            restaurantArray={restaurantArray}
+            onClickListItem={onRestaurantListItemClick}
+            updateMinRating={updateMinRating}
+            updateMaxRating={updateMaxRating}
+            filterMinRating={state.filterMinRating}
+            filterMaxRating={state.filterMaxRating}
           />
           : null
         }
@@ -302,7 +384,7 @@ function MapContainer(props) {
         {state.createRestaurantForm
           ?
           <RestaurantDetails
-            addTempMarker={addTempMarker}
+            addRestaurant={addRestaurant}
           />
           : null
         }

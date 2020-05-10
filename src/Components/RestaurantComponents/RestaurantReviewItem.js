@@ -31,13 +31,11 @@ export default function RestaurantReviewItem(props){
 
     return (
         <div>
-          <ListItem >
-          <StarRating rating={props.review.rating} />
-          <hr></hr>
+          <ListItem key={Date.now()+Math.floor(Math.random()*100)}>
+            <StarRating rating={props.review.rating} />
+            <hr></hr>
             <ListItemText
-            
               primary={props.review.text}/>
-              
           </ListItem>
           <Divider/>
         </div>

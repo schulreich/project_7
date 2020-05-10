@@ -1,6 +1,8 @@
 import React from 'react';
 
 import RestaurantListItem from "./RestaurantListItem"
+import MinStarFilter from "../RestaurantComponents/MinStarFilter"
+import MaxStarFilter from "../RestaurantComponents/MaxStarFilter"
 
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
@@ -26,15 +28,33 @@ const useStyles = makeStyles((theme) => ({
 export default function RestaurantList(props) {
   const classes = useStyles();
 
+  //console.log('(RestaurantList) Min :: '+props.filterMinRating+' :: Max :: '+props.filterMaxRating)
+
   return (
-        <List className={classes.root}>
-        {props.restaurantList.map(restaurant => (
-      <RestaurantListItem 
-        key={restaurant.id}
-        restaurant={restaurant}
-        onClickListItem={props.onClickListItem}
-      />
-      ))}
+    <div>
+      <MinStarFilter
+        selectedValue={props.filterMinRating}
+        updateMinRating={props.updateMinRating}
+        />
+      <MaxStarFilter
+        selectedValue={props.filterMaxRating}
+        updateMaxRating={props.updateMaxRating}
+        />
+    
+      <List className={classes.root}>
+        {Object.keys(props.restaurantArray).map(restaurant_id => {
+          if(props.restaurantArray[restaurant_id].rating >= props.filterMinRating && props.restaurantArray[restaurant_id].rating <= props.filterMaxRating){
+            return (
+              <RestaurantListItem 
+                key={restaurant_id}
+                restaurant={props.restaurantArray[restaurant_id]}
+                onClickListItem={props.onClickListItem}
+            />)
+      }else{
+        return null;
+      }
+      })}
       </List>
+    </div>
       )
 }

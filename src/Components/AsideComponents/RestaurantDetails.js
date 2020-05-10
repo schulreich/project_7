@@ -21,8 +21,7 @@ const useStyles = makeStyles((theme) => ({
     top:"12%",
     opacity:"0.9",
     margin:10,
-    overflow:"scroll"
-    
+    overflow:"scroll",
   },
   bullet: {
     display: 'inline-block',
@@ -34,7 +33,6 @@ const useStyles = makeStyles((theme) => ({
   },
   pos: {
     marginBottom: 12,
-  
     '& .MuiTextField-root': {
       margin: theme.spacing(1),
       width: '25ch',
@@ -53,13 +51,14 @@ export default function RestaurantDetails(props) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [review, setReview] = useState("");
+  const [rating, setRating] = useState("");
 
   const handleSubmit = (evt) => {
       evt.preventDefault();
       //console.log("call handleSubmit")
       //console.log(name)
       //console.log(address)
-      props.addTempMarker({name: name, address: address})
+      props.addRestaurant({name: name, address: address})
   }
 
   const handleReviewSubmit = (evt) => {
@@ -67,7 +66,7 @@ export default function RestaurantDetails(props) {
     //console.log("call handleSubmit")
     //console.log(name)
     //console.log(address)
-    props.addReview({review: review})
+    props.addReview({review: review, rating: rating})
 }
 
   
@@ -78,8 +77,8 @@ export default function RestaurantDetails(props) {
   //}
 
   const showCurrentRestaurant = (props, details) => {
-    console.log("showCurrentRestaurant")
-    console.log(details)
+    //console.log("showCurrentRestaurant")
+    //console.log(details)
     return (
       <Card className={classes.root}>
         <CardContent>
@@ -98,13 +97,14 @@ export default function RestaurantDetails(props) {
               height:55,
           }}
             id="outlined-multiline-static"
-            label="Multiline"
+            label="Review"
             multiline
             rows={4}
-            defaultValue="Default Value"
+            defaultValue=""
             variant="outlined"
             onChange={e => setReview(e.target.value)}
         />
+        <br /><br /><br /><br />
             <input type="submit" value="Submit" />
           </form>
       
@@ -113,6 +113,7 @@ export default function RestaurantDetails(props) {
             ?
             details.reviews.map(review => (
               <RestaurantReviewItem
+                key={Date.now()+Math.floor(Math.random()*100)}
                 review={review}>
               </RestaurantReviewItem>
            
@@ -123,11 +124,13 @@ export default function RestaurantDetails(props) {
           }
           
         </CardContent>
-        <CardActions>
-          <Button size="small"></Button>
-        </CardActions>
       </Card>
     );
+    /*
+    <CardActions>
+          <Button size="small">Button</Button>
+        </CardActions>
+        */
   };
 
   const showNoSelectedRestaurant = () => {
