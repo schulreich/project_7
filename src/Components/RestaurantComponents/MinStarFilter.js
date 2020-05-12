@@ -11,8 +11,8 @@ export default function MinStarFilter(props) {
       <Box component="fieldset" mb={3} borderColor="transparent"
         style={{
           position: "absolute",
-          left: "70%",
-          top:7,
+          left: "80%",
+          top:5,
           backgroundColor:"white"
     }}
       >

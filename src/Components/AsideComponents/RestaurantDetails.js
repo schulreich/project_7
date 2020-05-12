@@ -1,32 +1,31 @@
 import React, { useState } from 'react';
 
+import GoogleStreetView from "../GoogleMapsComponents/GoogleStreetView"
 
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
+
 import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import StarRating from "./StarRating"
+import Rating from '@material-ui/lab/Rating';
+
 import RestaurantReviewItem from "../RestaurantComponents/RestaurantReviewItem"
 import TextField from "@material-ui/core/TextField"
-import Divider from '@material-ui/core/Divider';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 275,
-    height: 490,
+    width: 320,
+    height: 700,
     zindex: 1,
     position: "absolute",
     top:"12%",
     opacity:"0.9",
     margin:10,
     overflow:"scroll",
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
+    listStyle:"none"
   },
   title: {
     fontSize: 14,
@@ -77,12 +76,16 @@ export default function RestaurantDetails(props) {
   //}
 
   const showCurrentRestaurant = (props, details) => {
-    //console.log("showCurrentRestaurant")
-    //console.log(details)
+    //console.log(props)
+    console.log(details)
     return (
       <Card className={classes.root}>
         <CardContent>
-
+          <CardMedia>
+            <GoogleStreetView
+              restaurant={props}
+            />
+          </CardMedia>  
           <Typography variant="h5" component="h2">
             {props.name}
           </Typography>
@@ -105,7 +108,16 @@ export default function RestaurantDetails(props) {
             onChange={e => setReview(e.target.value)}
         />
         <br /><br /><br /><br />
-            <input type="submit" value="Submit" />
+
+        <Rating 
+            name="size-small"
+            defaultValue={1} size="small"
+            onChange={e => setRating(parseInt(e.target.value))} />
+
+            <input type="submit" value="Submit"
+              style={{position: "absolute",
+              left: "60%"
+              }} />
           </form>
       
           {
@@ -149,13 +161,14 @@ export default function RestaurantDetails(props) {
     return (
       <Card className={classes.root}>
         <CardContent>
+       
         <form onSubmit={handleSubmit} className={classes.root} noValidate autoComplete="off">
       <div style={{position: "absolute",top: -25}}>
         <h4>Add new Restaurant</h4>
       <TextField
           style= {{margin:5}}
           required
-          id="filled-required"
+          id="filledRequiredName"
           label="Restaurant Name"
           placeholder="Restaurant Name"
           value={name}
@@ -165,7 +178,7 @@ export default function RestaurantDetails(props) {
          <TextField
           style= {{margin:5}}
           required
-          id="filled-required"
+          id="filledRequiredAdresse"
           label="Restaurant Adresse"
           placeholder="Restaurant Addresse"
           value={address}
@@ -186,7 +199,7 @@ export default function RestaurantDetails(props) {
             color="primary"
             type="submit"
             value="Submit"
-            color="Primary"> 
+            > 
             Submit  
         </Button>
       </div>

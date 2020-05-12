@@ -103,17 +103,30 @@ function MapContainer(props) {
           text: marker.text || ''
         });
       }
-    }else{  
-      setState({
-        ...state,
-        activeMarker: marker,
-        activeRestaurant: marker.restaurant,
-        activeRestaurantDetails: {},
-        showingInfoWindow: true,
-        showingRestaurantDetailsWindow: true,
-        createRestaurantForm:false,
-        text: marker.text || ''
-      });
+    }else{
+      if(restaurantDetailsList[marker.restaurant.id]){
+        setState({
+          ...state,
+          activeMarker: marker,
+          activeRestaurant: marker.restaurant,
+          activeRestaurantDetails: restaurantDetailsList[marker.restaurant.id],
+          showingInfoWindow: true,
+          showingRestaurantDetailsWindow: true,
+          createRestaurantForm:false,
+          text: marker.text || ''
+        });
+      }else{
+        setState({
+          ...state,
+          activeMarker: marker,
+          activeRestaurant: marker.restaurant,
+          activeRestaurantDetails: {},
+          showingInfoWindow: true,
+          showingRestaurantDetailsWindow: true,
+          createRestaurantForm:false,
+          text: marker.text || ''
+        });
+      }
     }
 
   };
@@ -139,6 +152,7 @@ function MapContainer(props) {
           "name":props.name,
           //"openingHours":props.openingHours,
           "id":Date.now()+Math.floor(Math.random()*100),
+          "rating":1,
           "vicinity":props.address,
           "tempMarker":true
       };
@@ -184,7 +198,8 @@ function MapContainer(props) {
 
       tempRestaurantDetailsList[state.activeRestaurant.id].reviews.push({
         text: review,
-        rating: rating
+        rating: rating,
+        author_name:"Developer"
       });
 
       let cnt_rating = 0;
@@ -192,14 +207,17 @@ function MapContainer(props) {
       tempRestaurantDetailsList[state.activeRestaurant.id].reviews.map(restaurantReview => {
         if(restaurantReview.rating){
           cnt_rating++;
+          //console.log('current review = '+restaurantReview.rating)
+          //console.log('current sum = '+sum_rating)
           sum_rating+=restaurantReview.rating;
+          //console.log('next sum = '+sum_rating)
         }
       });
       let avg_rating = sum_rating / cnt_rating;
       let tempRestaurantArray = restaurantArray;
       tempRestaurantArray[state.activeRestaurant.id].rating = avg_rating;
 
-      //console.log(tempRestaurantDetailsList[state.activeRestaurant.id]);
+      console.log(tempRestaurantDetailsList[state.activeRestaurant.id]);
       //console.log(tempRestaurantDetailsList);
       //console.log('Cnt Rating :: '+cnt_rating);
       //console.log('Sum Rating :: '+sum_rating);
@@ -304,19 +322,32 @@ function MapContainer(props) {
           createRestaurantForm:false
         });
       }
-    }else{  
-      setState({
-        ...state,
-        activeMarker: null,
-        showingInfoWindow: false,
-        activeRestaurantDetails: {},
-        activeRestaurant: props.restaurant,
-        showingRestaurantDetailsWindow: true,
-        createRestaurantForm:false
-      });
+    }else{
+      if(restaurantDetailsList[props.restaurant.id]){
+        setState({
+          ...state,
+          activeMarker: null,
+          showingInfoWindow: false,
+          activeRestaurantDetails: restaurantDetailsList[props.restaurant.id],
+          activeRestaurant: props.restaurant,
+          showingRestaurantDetailsWindow: true,
+          createRestaurantForm:false
+        });
+      }else{
+        setState({
+          ...state,
+          activeMarker: null,
+          showingInfoWindow: false,
+          activeRestaurantDetails: {},
+          activeRestaurant: props.restaurant,
+          showingRestaurantDetailsWindow: true,
+          createRestaurantForm:false
+        });
+      }
     }
   }
-
+  //console.log(restaurantArray)
+  console.log(restaurantDetailsList);
   return (
     <div className='map' id="myMap">
       <Map

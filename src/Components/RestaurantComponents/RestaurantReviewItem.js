@@ -3,10 +3,9 @@ import React from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import Avatar from '@material-ui/core/Avatar';
 import StarRating from "../AsideComponents/StarRating";
 import Divider from "@material-ui/core/Divider";
-import Typography from '@material-ui/core/Typography';
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -31,11 +30,12 @@ export default function RestaurantReviewItem(props){
 
     return (
         <div>
-          <ListItem key={Date.now()+Math.floor(Math.random()*100)}>
+          <ListItem className="myListItem" key={Date.now()+Math.floor(Math.random()*100)}>
             <StarRating rating={props.review.rating} />
-            <hr></hr>
             <ListItemText
-              primary={props.review.text}/>
+              primary={props.review.author_name}
+              secondary={props.review.text}
+              />
           </ListItem>
           <Divider/>
         </div>

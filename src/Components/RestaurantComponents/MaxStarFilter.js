@@ -11,7 +11,7 @@ export default function MaxStarFilter(props) {
       <Box component="fieldset" mb={3} borderColor="transparent"
         style={{
             position: "absolute",
-            left: "80%",
+            left: "87%",
             top:7,
             backgroundColor:"white"
         }}

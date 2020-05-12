@@ -10,11 +10,11 @@ import List from '@material-ui/core/List';
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 275,
-    height: 490,
+    height: 700,
     zindex: 1,
     position: "absolute",
     top:"12%",
-    left: "70%",
+    left: "80%",
     overflow:"scroll",
     opacity:"0.9",
     backgroundColor: theme.palette.background.paper,
