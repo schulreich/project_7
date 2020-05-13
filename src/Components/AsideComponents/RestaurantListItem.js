@@ -36,7 +36,8 @@ export default function RestaurantListItem(props){
             onClick={() => props.onClickListItem(props)}
             >
             <ListItemAvatar>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg"
+              style={{backgroundColor:"orange"}}/>
             </ListItemAvatar>
             <ListItemText
               primary={props.restaurant.name}
@@ -47,10 +48,11 @@ export default function RestaurantListItem(props){
                     variant="body2"
                     className={classes.inline}
                     color="textPrimary"
+                    style={{fontSize:"small"}}
                   >
-                    Ali Connors
+                     {props.restaurant.vicinity}
                   </Typography>
-                  {" — I'll be in your neighborhood doing errands this…"}
+                 
                 </React.Fragment>
               }
             />
