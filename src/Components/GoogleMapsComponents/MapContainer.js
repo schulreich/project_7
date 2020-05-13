@@ -104,7 +104,12 @@ function MapContainer(props) {
         });
       }
     }else{
-      if(restaurantDetailsList[marker.restaurant.id]){
+      if(
+        marker
+        && marker.restaurant
+        && marker.restaurant.id
+        && restaurantDetailsList[marker.restaurant.id]
+      ){
         setState({
           ...state,
           activeMarker: marker,
@@ -323,7 +328,12 @@ function MapContainer(props) {
         });
       }
     }else{
-      if(restaurantDetailsList[props.restaurant.id]){
+      if(
+        props
+        && props.restaurant
+        && props.restaurant.id
+        && restaurantDetailsList[props.restaurant.id]
+      ){
         setState({
           ...state,
           activeMarker: null,
