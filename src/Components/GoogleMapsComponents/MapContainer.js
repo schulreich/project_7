@@ -41,7 +41,7 @@ function MapContainer(props) {
     createRestaurantForm: false,
     tempMarkerLocation:{},
     filterMinRating:1,
-    filterMaxRating:4,
+    filterMaxRating:5,
   });
 
   const storeRestaurantArrayResults = (props) => {
