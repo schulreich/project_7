@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Component MainGrid displays the MapContainer.
+ */
 export default function MainGrid() {
   const classes = useStyles();
 

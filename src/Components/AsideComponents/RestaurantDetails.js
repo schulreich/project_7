@@ -10,9 +10,10 @@ import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Rating from '@material-ui/lab/Rating';
+import TextField from "@material-ui/core/TextField"
+
 
 import RestaurantReviewItem from "../RestaurantComponents/RestaurantReviewItem"
-import TextField from "@material-ui/core/TextField"
 
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +44,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
+/**
+ * Component RestaurantDetails displays active restaurant Information or the form to create a new restaurant.
+ * It contains restaurantReviewItem.
+ * Following parameters are used:
+ * - addRestaurant (parent method to add a restaurant)
+ * - addReview (parent method to add a review)
+ * - restaurant (current selected restaurant)
+ * - details (current selected restaurant details (reviews and photos))
+ */
 export default function RestaurantDetails(props) {
   const classes = useStyles();
 
@@ -54,37 +63,30 @@ export default function RestaurantDetails(props) {
 
   const handleSubmit = (evt) => {
       evt.preventDefault();
-      //console.log("call handleSubmit")
-      //console.log(name)
-      //console.log(address)
       props.addRestaurant({name: name, address: address})
   }
 
   const handleReviewSubmit = (evt) => {
     evt.preventDefault();
-    //console.log("call handleSubmit")
-    //console.log(name)
-    //console.log(address)
     props.addReview({review: review, rating: rating})
 }
 
-  
-  //const [restaurantName, setRestaurantName] = useState(props.restaurant.name)
-  //if(props && props.restaurant){
-    //console.log(props.restaurant)
-    //console.log(props.marker.restaurant.photos[0])
-  //}
-
   const showCurrentRestaurant = (props, details) => {
-    //console.log(props)
-    console.log(details)
     return (
       <Card className={classes.root}>
         <CardContent>
           <CardMedia>
-            <GoogleStreetView
-              restaurant={props}
-            />
+            {
+              details && details.photos && details.photos[0]
+              ?
+              <img src={details.photos[0].getUrl()} style={{height:200, width:275}}/>
+
+              :
+              (<GoogleStreetView
+                restaurant={props}
+              />)
+            }
+            
           </CardMedia>  
           <Typography variant="h5" component="h2">
             {props.name}
@@ -138,32 +140,16 @@ export default function RestaurantDetails(props) {
         </CardContent>
       </Card>
     );
-    /*
-    <CardActions>
-          <Button size="small">Button</Button>
-        </CardActions>
-        */
   };
-
-  const showNoSelectedRestaurant = () => {
-    //console.log(showNoSelectedRestaurant)
-    /*
-     <TextField
-          required
-          id="filled-required"
-          label="Required"
-          defaultValue="Restaurant Name"
-          variant="filled"
-        />
-        
-       
-     */
+  
+  const showCreateRestaurantForm = () => {
+  
     return (
       <Card className={classes.root}>
         <CardContent>
        
-        <form onSubmit={handleSubmit} className={classes.root} noValidate autoComplete="off">
-      <div style={{position: "absolute",top: -25}}>
+        <form onSubmit={handleSubmit} className={classes.root} noValidate autoComplete="off" style={{left: -27}}>
+      <div style={{position: "absolute",top: -25, left: 40}}>
         <h4>Add new Restaurant</h4>
       <TextField
           style= {{margin:5}}
@@ -208,16 +194,11 @@ export default function RestaurantDetails(props) {
         </CardContent>
       </Card>
     );
-    /*
-    <CardActions>
-          <Button size="small">Add new restaurant</Button>
-        </CardActions>
-        */
   };
 
   if(props && props.restaurant){
     return showCurrentRestaurant(props.restaurant, props.details);
   }else{
-    return showNoSelectedRestaurant();
+    return showCreateRestaurantForm();
   }
 }

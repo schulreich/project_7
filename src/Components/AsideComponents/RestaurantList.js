@@ -24,11 +24,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
+/**
+ * Component RestaurantList displays the list of restaurant.
+ * It is displayed on the right side of the page.
+ * It contains a list of restaurantListItem, also the components MinStar/MaxStarFilter.
+ * Following parameters are used: 
+ * - filterMinRating (current minimum filter)
+ * - updateMinRating (parent method to update current minimum filter)
+ * - filterMaxRating (current maximum filter)
+ * - updateMaxRating (parent method to update current maximum filter)
+ * - restaurantArray (all restaurant)
+ * - onClickListItem (parent method to open the corresponding restaurant)
+ */
 export default function RestaurantList(props) {
   const classes = useStyles();
-
-  //console.log('(RestaurantList) Min :: '+props.filterMinRating+' :: Max :: '+props.filterMaxRating)
 
   return (
     <div>

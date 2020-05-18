@@ -3,6 +3,12 @@ import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+/**
+ * Component MaxStarFilter displays a current maximum rating filter.
+ * Following parameters are used:
+ * - selectedValue (current maximum rating filter)
+ * - updateMaxRating (parent method to update current maximum rating filter)
+ */
 export default function MaxStarFilter(props) {
   const [maxValue, setMaxValue] = React.useState(props.selectedValue);
 

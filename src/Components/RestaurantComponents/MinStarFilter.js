@@ -3,6 +3,12 @@ import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+/**
+ * Component MinStarFilter displays a current minimum rating filter.
+ * Following parameters are used:
+ * - selectedValue (current minimum rating filter)
+ * - updateMinRating (parent method to update current minimum rating filter)
+ */
 export default function MinStarFilter(props) {
   const [minValue, setMinValue] = React.useState(props.selectedValue);
 
@@ -12,7 +18,7 @@ export default function MinStarFilter(props) {
         style={{
           position: "absolute",
           left: "80%",
-          top:5,
+          top:7,
           backgroundColor:"white"
     }}
       >

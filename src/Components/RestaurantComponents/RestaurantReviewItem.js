@@ -3,9 +3,9 @@ import React from "react"
 import { makeStyles } from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import StarRating from "../AsideComponents/StarRating";
 import Divider from "@material-ui/core/Divider";
 
+import StarRating from "../AsideComponents/StarRating";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -24,6 +24,11 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
+/**
+ * Component RestaurantReviewItem display a single review for the current selected restaurant.
+ * Following parameters are used:
+ * - review (review data) 
+ */
 export default function RestaurantReviewItem(props){
     const classes = useStyles();
 

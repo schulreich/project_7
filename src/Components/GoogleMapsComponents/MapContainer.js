@@ -5,6 +5,9 @@ import MapConfig from "./MapConfig"
 import RestaurantDetails from '../AsideComponents/RestaurantDetails';
 import RestaurantList from "../AsideComponents/RestaurantList"
 
+/**
+ * Component MapContainter displays the Map/Markers/InfoWindow/RestaurantDetails/RestaurantList on the page.
+ */
 function MapContainer(props) {
   const [zoomLevel, setZoomLevel] = useState(MapConfig.zoomLevel)
   const [lat] = useState(MapConfig.lat || 51.4344);
@@ -16,7 +19,9 @@ function MapContainer(props) {
   const mapObject = new window.google.maps.Map(document.createElement('div'));
   const googlePlacesService = new window.google.maps.places.PlacesService(mapObject);
 
-  //get called multiple times solution ?? where best to call 
+  /**
+   * Fetch data from GoogleApi which will be saved in the restaurantArray.
+   */
   useEffect(() => {
     async function fetchData() {
       const res = await fetch("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=51.434406,6.762329&radius=1500&type=restaurant&key=AIzaSyC6iHzGGrNmtKZB-LDf2tCYMOQXKD6YPac");
@@ -43,14 +48,12 @@ function MapContainer(props) {
     filterMinRating:1,
     filterMaxRating:5,
   });
-
+  
+  /**
+   * store and convert the fetch data into associative array (restaurant id as index for rating update purpose)
+   */
   const storeRestaurantArrayResults = (props) => {
-    //console.log(props)
     if(props && props.results){
-      /*
-      setRestaurantArray(props.results);
-      return;
-      */
       let newRestaurantArray = [];
       props.results.map(restaurant => {
         if(restaurant && restaurant.id){
@@ -58,23 +61,25 @@ function MapContainer(props) {
         }
       });
       setRestaurantArray(newRestaurantArray);
-      //console.log(newRestaurantArray);
     }
   };
 
+  /**
+   * Set the current marker as active.
+   * Fetch and store restaurant details via googlePlacesService.
+   * Displays restaurantDetails and InfoWindow.
+   */
   const onMarkerClick = (props, marker) => {
-    //console.log('onMarkerClick');
-    //console.log(props);
-    //console.log(marker);
+    //check if restaurant has a place_id
     if(
       marker.restaurant 
       && marker.restaurant.place_id
-    ){
-      if(!restaurantDetailsList[marker.restaurant.id]){
+    ){ //real restaurant
+      //check if details are already fetched
+      if(!restaurantDetailsList[marker.restaurant.id]){ // restaurant details not found, data will be fetched
         let request = {
           placeId: marker.restaurant.place_id
         };
-        //fields: ['name', 'formatted_address', 'geometry', 'rating','website', 'photos']
 
         googlePlacesService.getDetails(request, (placeResult, status) => {
           let tempRestaurantDetailsList = restaurantDetailsList;
@@ -91,7 +96,7 @@ function MapContainer(props) {
             text: marker.text || ''
           });
         });
-      }else{
+      }else{ //restaurant details found
         setState({
           ...state,
           activeMarker: marker,
@@ -103,13 +108,14 @@ function MapContainer(props) {
           text: marker.text || ''
         });
       }
-    }else{
+    }else{ //user created restaurant
+      //check if details are already created
       if(
         marker
         && marker.restaurant
         && marker.restaurant.id
         && restaurantDetailsList[marker.restaurant.id]
-      ){
+      ){ //already existing
         setState({
           ...state,
           activeMarker: marker,
@@ -120,7 +126,7 @@ function MapContainer(props) {
           createRestaurantForm:false,
           text: marker.text || ''
         });
-      }else{
+      }else{ //no details existing
         setState({
           ...state,
           activeMarker: marker,
@@ -146,7 +152,6 @@ function MapContainer(props) {
 
   const addRestaurant = (props) =>{
     if(state.tempMarkerLocation){
-
       const newMarker={
         "geometry": {
           "location":{
@@ -155,13 +160,11 @@ function MapContainer(props) {
           }
         },
           "name":props.name,
-          //"openingHours":props.openingHours,
           "id":Date.now()+Math.floor(Math.random()*100),
           "rating":1,
           "vicinity":props.address,
           "tempMarker":true
       };
-      //let newRestaurantArray=restaurantArray.concat([newMarker])
       let newRestaurantArray=restaurantArray;
       newRestaurantArray[newMarker.id] = newMarker;
       setRestaurantArray(newRestaurantArray)
@@ -175,8 +178,6 @@ function MapContainer(props) {
   }
 
   const addReview=(props) =>{
-    //console.log("TestAddReview")
-    //console.log(props)
     if(
       props 
       && (
@@ -194,40 +195,26 @@ function MapContainer(props) {
       }
       let tempRestaurantDetailsList = restaurantDetailsList
       if(!tempRestaurantDetailsList[state.activeRestaurant.id]){
-        //console.log('new restaurantDetails created');
-        //create new restaurantDetails if not existing
         tempRestaurantDetailsList[state.activeRestaurant.id] = {
           reviews: []
         }
       }
-
       tempRestaurantDetailsList[state.activeRestaurant.id].reviews.push({
         text: review,
         rating: rating,
         author_name:"Developer"
       });
-
       let cnt_rating = 0;
       let sum_rating = 0;
       tempRestaurantDetailsList[state.activeRestaurant.id].reviews.map(restaurantReview => {
         if(restaurantReview.rating){
           cnt_rating++;
-          //console.log('current review = '+restaurantReview.rating)
-          //console.log('current sum = '+sum_rating)
           sum_rating+=restaurantReview.rating;
-          //console.log('next sum = '+sum_rating)
         }
       });
       let avg_rating = sum_rating / cnt_rating;
       let tempRestaurantArray = restaurantArray;
       tempRestaurantArray[state.activeRestaurant.id].rating = avg_rating;
-
-      console.log(tempRestaurantDetailsList[state.activeRestaurant.id]);
-      //console.log(tempRestaurantDetailsList);
-      //console.log('Cnt Rating :: '+cnt_rating);
-      //console.log('Sum Rating :: '+sum_rating);
-      //console.log('Avg Rating :: '+avg_rating);
-
       setRestaurantDetailsList(tempRestaurantDetailsList);
       setRestaurantArray(tempRestaurantArray);
     }
@@ -257,17 +244,9 @@ function MapContainer(props) {
     if(!value || value < 1 || value > 5){
       value = 1;
     }
-    /*
-    let valueMax = state.filterMaxRating;
-    if(valueMax < value){
-      valueMax = value;
-    }
-    console.log('(updateMinRating) Min :: '+value+' :: Max :: '+valueMax)
-    */
     setState({
       ...state,
       filterMinRating: value,
-      //filterMaxRating: valueMax
     });
   }
 
@@ -275,23 +254,13 @@ function MapContainer(props) {
     if(!value || value < 1 || value > 5){
       value = 5;
     }
-    /*
-    let valueMin = state.filterMinRating;
-    if(valueMin > value){
-      valueMin = value;
-    }
-    console.log('(updateMaxRating) Min :: '+valueMin+' :: Max :: '+value)
-    */
     setState({
       ...state,
       filterMaxRating: value,
-      //filterMinRating: valueMin
     });
   }
 
   const onRestaurantListItemClick = (props) => {
-    //console.log("RestaurantListItemClicked")
-    //console.log(props);
     if(
       props.restaurant 
       && props.restaurant.place_id
@@ -300,8 +269,6 @@ function MapContainer(props) {
         let request = {
           placeId: props.restaurant.place_id
         };
-        //fields: ['name', 'formatted_address', 'geometry', 'rating','website', 'photos']
-
         googlePlacesService.getDetails(request, (placeResult, status) => {
           let tempRestaurantDetailsList = restaurantDetailsList;
           tempRestaurantDetailsList[props.restaurant.id] = placeResult;
@@ -356,8 +323,7 @@ function MapContainer(props) {
       }
     }
   }
-  //console.log(restaurantArray)
-  console.log(restaurantDetailsList);
+  
   return (
     <div className='map' id="myMap">
       <Map

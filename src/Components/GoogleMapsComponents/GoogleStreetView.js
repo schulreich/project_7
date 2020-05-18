@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactStreetview from 'react-streetview';
 
+/**
+ * Component GoogleStreetView displays image from restaurants created by the user.
+ * Following parameters are used:
+ * - restaurant (current selected restaurant) 
+ */
 export default function GoogleStreetView(props) {
 	//console.log(props)
 		// see https://developers.google.com/maps/documentation/javascript

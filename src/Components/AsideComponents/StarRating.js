@@ -3,6 +3,11 @@ import Rating from '@material-ui/lab/Rating';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
+/**
+ * Component StarRating display star rating from current selected restaurant reviews.
+ * Following parameters are used:
+ * - rating (current restaurant review rating)
+ */
 export default function StarRating(props) {
   
   return (

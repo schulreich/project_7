@@ -25,6 +25,12 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
+/**
+ * Component RestaurantListItem displays one restaurant inside RestaurantList.
+ * Following parameters are used:
+ * - onClickListItem (parent method to open the corresponding restaurant)
+ * - restaurant (restaurant data)
+ */
 export default function RestaurantListItem(props){
     const classes = useStyles();
 
