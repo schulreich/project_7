@@ -1,3 +1,12 @@
 [0331/012345.613:ERROR:process_reader_win.cc(151)] SuspendThread: Zugriff verweigert (0x5)
 [0331/012345.674:ERROR:exception_snapshot_win.cc(98)] thread ID 13012 not found in process
 [0331/012345.674:ERROR:scoped_process_suspend.cc(40)] NtResumeProcess: Es wurde versucht, auf einen Prozess zuzugreifen, der gerade beendet wurde. (0xc000010a)
+[0617/160040.557:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0617/160040.557:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0617/160040.557:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0617/160613.401:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0617/160613.401:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0617/160613.401:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0619/164120.689:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0619/164120.690:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0619/164120.690:ERROR:crash_report_database_win.cc(469)] failed to stat report

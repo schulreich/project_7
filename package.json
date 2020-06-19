@@ -1,4 +1,5 @@
 {
+  "homepage": "https://schulreich.github.io/project_7",
   "name": "project_7",
   "version": "0.1.0",
   "private": true,
@@ -26,7 +27,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.8.3",
-    "babel-plugin-transform-decorators-legacy": "^1.3.5"
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
+    "gh-pages": "^3.0.0"
   }
 }

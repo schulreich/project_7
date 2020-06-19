@@ -5,6 +5,6 @@ export default {
     markerLongitude: 51.4344,
     markerLatitude: 6.7623,
     useDefaultUI: false,
-    apiKey: 'your_api_key',
+    apiKey: 'AIzaSyC6iHzGGrNmtKZB-LDf2tCYMOQXKD6YPac',
     googleMapsMarkerIcon: 'marker icon link'
 };
