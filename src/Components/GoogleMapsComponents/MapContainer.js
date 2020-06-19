@@ -24,7 +24,7 @@ function MapContainer(props) {
    */
   useEffect(() => {
     async function fetchData() {
-      const res = await fetch("https://cors.io/?https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=51.434406,6.762329&radius=1500&type=restaurant&key=AIzaSyC6iHzGGrNmtKZB-LDf2tCYMOQXKD6YPac");
+      const res = await fetch("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=51.434406,6.762329&radius=1500&type=restaurant&key=AIzaSyC6iHzGGrNmtKZB-LDf2tCYMOQXKD6YPac");
       res
         .json()
         .then(res => storeRestaurantArrayResults(res))
